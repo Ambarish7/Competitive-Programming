@@ -1,0 +1,56 @@
+class Solution {
+    int pairs(vector<string> &vec, char x){
+        vector<int> cnt (26,0);
+        if(vec.size()==0)return 0;
+
+        for(auto it : vec){
+            if(it[0]==x){
+                cnt[it[1]-'a']++;
+            }
+            else if(it[1]==x) {
+                cnt[it[0]-'a']++;
+            }
+        }
+        sort(cnt.rbegin(),cnt.rend());
+        int maxi = cnt[0];
+        //for(int i = 0 ; i<26 ; i++)cout<<cnt[i];
+        //cout<<endl;
+        int total = vec.size();
+        //cout<<"total is :- "<<total<<endl;
+        
+        //cout<<"maxi is :-"<<maxi<<endl;
+        if(2*maxi>=total){
+            return total - maxi;
+        }
+        return total/2;
+    }
+public:
+    int score(vector<string>& cards, char x) {
+        int n = cards.size();
+        vector<string> a,b,c;
+        for(auto it : cards){
+            if(it[0]==x && it[1]==x){
+                c.push_back(it);
+            }
+            else if(it[0]==x){
+                a.push_back(it);
+            }
+            else if(it[1]==x){
+                b.push_back(it);
+            }
+        }
+        int pairs1 = pairs(a,x);
+        //cout<<"pairs1 :-"<<pairs1<<endl;
+        int pairs2 = pairs(b,x);
+        //cout<<"pairs2 :-"<<pairs2<<endl;
+        int r1 = a.size()-2*pairs1;
+        //cout<<"r1 :-"<<r1<<endl;
+        int r2 = b.size()-2*pairs2;
+        //cout<<"r2 :-"<<r2<<endl;
+        int ans = pairs1+pairs2+min((int)c.size(),(r1+r2));
+        int extra = min((int)c.size(), r1+r2);
+        int left = min(((int)c.size()-extra)/2 , pairs1+pairs2);
+        ans += left;
+        return ans ;
+    }
+};
