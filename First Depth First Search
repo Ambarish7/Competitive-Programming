@@ -1,0 +1,23 @@
+int Solution::solve(vector<int> &A, const int B, const int C) {
+    int n = A.size();
+    vector<vector<int>> adj(n+1);
+    for(int i = 0 ; i<n ; i++){
+        adj[A[i]].push_back(i+1);
+    }
+    vector<int> visited(n+1,0);
+    queue<int>q;
+    visited[C]=1;
+    q.push(C);
+    while(!q.empty()){
+        int node = q.front();
+        q.pop();
+        for(auto it : adj[node]){
+            if(visited[it]!=1){
+                q.push(it);
+                visited[it]=1;
+            }
+        }
+    }
+    if(visited[B]==1)return true;
+    return false ;
+}
