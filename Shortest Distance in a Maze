@@ -1,0 +1,34 @@
+int Solution::solve(vector<vector<int> > &A, vector<int> &B, vector<int> &C) {
+    int n = A.size();
+    int m = A[0].size();
+    vector<vector<int>> dis(n+1,vector<int>(m+1,1e9+7));
+    queue<pair<int,int>> q;
+    q.push({B[0],B[1]});
+    int dcol[]= {-1,1,0,0};
+    int drow[] = {0,0,1,-1};
+    dis[B[0]][B[1]]=0;
+    while(!q.empty()){
+        auto it = q.front();
+        q.pop();
+        int row = it.first;
+        int col = it.second;
+        for(int i = 0 ; i<4 ; i++){
+            int nrow = row + drow[i];
+            int ncol = col + dcol[i];
+            int steps = 0 ;
+            while(ncol>=0 && ncol<m && nrow<n && nrow>=0 && A[nrow][ncol]==0){
+                nrow += drow[i];
+                ncol += dcol[i];
+                steps++;
+            }
+            nrow -= drow[i];
+            ncol -= dcol[i];
+            if(dis[nrow][ncol] > dis[row][col]+steps){
+                dis[nrow][ncol]= dis[row][col]+steps;
+                q.push({nrow,ncol});
+            }
+        }
+    }
+    if(dis[C[0]][C[1]]==1e9+7)return -1;
+    else return dis[C[0]][C[1]];
+}
