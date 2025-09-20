@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+#ifndef ONLINE_JUDGE
+  freopen("input.txt", "r", stdin);
+  freopen("output.txt", "w", stdout);
+#endif
+  int t ;
+  cin >> t;
+  while (t--) {
+    int n, m;
+    cin >> n >> m;
+    long long a[n];
+    for (int i = 0 ; i < n ; i++)cin >> a[i];
+    long long s1 = 0;
+    long long s2 = 0;
+    for (int i = 0 ; i < n ; i++) {
+      s2 += a[i];
+    }
+    map<long long , long long > mp;
+    for (int i = 0 ; i < n ; i++)mp[a[i]]++;
+    long long ans = s2;
+    long long left = 0;
+    long long right = n;
+    for ( auto it : mp) {
+      long long val = it.first;
+      long long freq = it.second;
+
+      s2 -= val * freq;
+      right -= freq;
+      ans = min(ans , s1 + (m - val) * left + s2 + (m - val) * right - m * right);
+
+      s1 += val * freq;
+      left += freq;
+    }
+
+    cout << ans << endl;
+
+
+  }
+
+
+  return 0;
+}
