@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, k, l, r;
+        cin >> n >> k >> l >> r;
+        long long a[n];
+        for (int i = 0 ; i < n ; i++)cin >> a[i];
+
+        map<long long, long long> mp;
+        set<pair<long long, long long>> st;
+
+        long long ans = 0 ;
+
+        for (int i = 0 ; i < n ; i++) {
+            int x = a[i];
+            if (mp.find(x) != mp.end()) {
+                st.erase({mp[x], x});
+            }
+            mp[x] = i;
+            st.insert({mp[x], x});
+            if (st.size() > k + 1) {
+                st.erase(st.begin());
+            }
+            if (st.size() < k) {
+                continue;
+            }
+            long long low = 0;
+            long long high = 0;
+
+            if (st.size() == k) {
+                low = i - (*st.begin()).first + 1;
+                high = i + 1;
+            }
+            else if ( st.size() == k + 1) {
+                low = i - (*next(st.begin())).first + 1;
+                high = i - (*st.begin()).first;
+            }
+            low = max(low, 1LL * l);
+            high = min(high, 1LL * r);
+            if (low <= high) {
+                ans += high - low + 1;
+            }
+
+        }
+
+        cout << ans << endl;
+
+
+
+    }
+    return 0;
+}
