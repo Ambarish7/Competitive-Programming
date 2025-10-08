@@ -1,0 +1,109 @@
+1-based indexing 
+class Solution {
+public:
+    int distinctPoints(string s, int k) {
+        int n = s.size();
+        vector<int> left(n+1,0),right(n+1,0),up(n+1,0),down(n+1,0);
+        for(int i = 0 ; i<n ; i++){
+            if(s[i]=='L'){
+                left[i+1] += 1 +left[i];
+                right[i+1]= right[i];
+                up[i+1] = up[i];
+                down[i+1] = down[i];
+            }
+            else if(s[i]=='R'){
+                right[i+1] += 1+right[i];
+                left[i+1]= left[i];
+                up[i+1] = up[i];
+                down[i+1] = down[i];
+            }
+            else if(s[i]=='U'){
+                up[i+1]  += 1+up[i];
+                left[i+1] = left[i];
+                right[i+1] = right[i];
+                down[i+1] = down[i];
+            }
+            else if(s[i]=='D'){
+                down[i+1] += 1+ down[i];
+                left[i+1] = left[i];
+                right[i+1] = right[i];
+                up[i+1] = up[i];
+            }
+        }
+        int ans =0;
+        set<pair<int,int>> st;
+        for(int i = k ; i<=n ; i++){
+        int u = up[n] - (up[i]-up[i-k]);
+        int d = down[n] - (down[i]-down[i-k]);
+        int l = left[n]- (left[i]-left[i-k]);
+        int r = right[n] - (right[i]-right[i-k]);
+
+        int x = l-r;
+        int y = u-d;
+        st.insert({x,y});
+    }
+    return st.size();
+    }
+};
+
+
+
+0 based indexing ->
+#include <vector>
+#include <set>
+#include <string>
+using namespace std;
+
+class Solution {
+public:
+    int distinctPoints(string s, int k) {
+        int n = s.size();
+        vector<int> left(n, 0), right(n, 0), up(n, 0), down(n, 0);
+
+        // Build 0-based prefix sums
+        for (int i = 0; i < n; i++) {
+            if (s[i] == 'L') {
+                left[i] = 1 + (i > 0 ? left[i - 1] : 0);
+                right[i] = (i > 0 ? right[i - 1] : 0);
+                up[i] = (i > 0 ? up[i - 1] : 0);
+                down[i] = (i > 0 ? down[i - 1] : 0);
+            }
+            else if (s[i] == 'R') {
+                right[i] = 1 + (i > 0 ? right[i - 1] : 0);
+                left[i] = (i > 0 ? left[i - 1] : 0);
+                up[i] = (i > 0 ? up[i - 1] : 0);
+                down[i] = (i > 0 ? down[i - 1] : 0);
+            }
+            else if (s[i] == 'U') {
+                up[i] = 1 + (i > 0 ? up[i - 1] : 0);
+                left[i] = (i > 0 ? left[i - 1] : 0);
+                right[i] = (i > 0 ? right[i - 1] : 0);
+                down[i] = (i > 0 ? down[i - 1] : 0);
+            }
+            else if (s[i] == 'D') {
+                down[i] = 1 + (i > 0 ? down[i - 1] : 0);
+                left[i] = (i > 0 ? left[i - 1] : 0);
+                right[i] = (i > 0 ? right[i - 1] : 0);
+                up[i] = (i > 0 ? up[i - 1] : 0);
+            }
+        }
+
+        set<pair<int, int>> st;
+
+        for (int i = k - 1; i < n; i++) {
+            int start = i - k + 1;
+
+            int u = up[n - 1] - (start > 0 ? up[start - 1] : 0);
+            int d = down[n - 1] - (start > 0 ? down[start - 1] : 0);
+            int l = left[n - 1] - (start > 0 ? left[start - 1] : 0);
+            int r = right[n - 1] - (start > 0 ? right[start - 1] : 0);
+
+            int x = l - r;
+            int y = u - d;
+
+            st.insert({x, y});
+        }
+
+        return st.size();
+    }
+};
