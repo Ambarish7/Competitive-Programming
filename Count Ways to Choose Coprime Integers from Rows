@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int mod = 1e9+7;
+    int countCoprime(vector<vector<int>>& mat) {
+        int n = mat.size();
+        int m = mat[0].size();
+        
+        vector<int> dp(151,0);
+        for(int i = 0 ; i<m ; i++){
+            dp[mat[0][i]]++;
+        }
+        for(int i = 1 ; i<n ; i++){
+            vector<int> vec(151,0);
+            for(int j = 0 ; j<151 ; j++){
+                if(dp[j]==0)continue;
+                for(auto it : mat[i]){
+                    int x = __gcd(it,j);
+                    vec[x] = (dp[j]+vec[x])%mod;
+                }
+            }
+            dp= vec;
+        }
+        return dp[1];
+    }
+};
