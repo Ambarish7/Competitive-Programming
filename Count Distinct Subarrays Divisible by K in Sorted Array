@@ -1,0 +1,33 @@
+class Solution {
+public:
+    long long numGoodSubarrays(vector<int>& nums, int k) {
+        int n = nums.size();
+        map<int,long long> mp;
+        vector<long long > pre(n,0);
+        pre[0]= 1LL*nums[0]%k;
+        for(int i =1 ; i<n ; i++){
+            pre[i] = (pre[i-1]+1LL*nums[i])%k;
+        }
+        long long ans =0;
+        mp[0]=1;
+        for(int i = 0 ; i<n ; i++){
+            if(mp.find(pre[i])!=mp.end()){
+                ans += mp[pre[i]];
+            }
+            mp[pre[i]]++;
+        }
+        for(int i = 0 ; i<n ; i++){
+            int j = i;
+            while(j<n && nums[i]==nums[j])j++;
+            long long len = j-i;
+            for(int p = 1; p<len ; p++){
+                if((1LL*p*nums[i])%k==0){
+                    ans -= (len-1LL*p);
+                }
+            }
+            i = j-1;
+        }
+        return ans;
+
+    }
+};
