@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int minNumberOperations(vector<int>& target) {
+        int n = target.size();
+        int ans =0;
+        ans = max(target[0],target[1]);
+        for(int i = 2; i<n ; i++){
+            int val2 = target[i]-target[i-1];
+            
+            if(val2<0){
+                val2=0;
+            }
+            ans += val2;
+            
+        }
+        return ans;
+
+    }
+};
