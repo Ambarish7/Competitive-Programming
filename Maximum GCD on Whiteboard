@@ -1,0 +1,61 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n , k;
+        cin >> n >> k;
+        vector<long long> a(n);
+        for (int i = 0 ; i < n ; i++)cin >> a[i];
+        long long ans = -1;
+        vector<long long> mp(n + 1, 0);
+        for ( auto it : a ) {
+            mp[it]++;
+        }
+        vector<long long> pre(n + 1, 0);
+        pre[0] = 0;
+        for (int i = 1; i <= n ; i++) {
+            pre[i] = pre[i - 1] + mp[i];
+        }
+        for (int g = 1; g <= n; g++) {
+            int t = min(n, (4 * g ) - 1);
+            int good = n - (int)pre[t];
+
+            if (g <= n)good += mp[g];
+            if (2 * g <= n)good += mp[2 * g];
+            if (3 * g <= n)good += mp[3 * g];
+
+            if (good >= n - k) {
+                ans = g;
+            }
+        }
+        cout << ans << endl;
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
