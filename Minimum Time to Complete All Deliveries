@@ -1,0 +1,28 @@
+class Solution {
+    private :
+    bool check(long long val , vector<int>&d , vector<int>&r){
+        long long lcm= (r[0]/__gcd(r[0],r[1]))*r[1];
+        long long first = val - val/r[0];
+        long long second = val- val/r[1];
+        long long avail = val-(val/lcm);
+        if(first<d[0] || second<d[1])return false ;
+        return avail>=0;
+    }
+public:
+    long long minimumTime(vector<int>& d, vector<int>& r) {
+        long long low =0;
+        long long high = 2e10;
+        long long ans =-1;
+        while(low<=high){
+            long long mid = low + (high-low)/2;
+            if(check(mid,d,r)){
+                ans = mid;
+                high = mid-1;
+            }
+            else {
+                low = mid+1;
+            }
+        }
+        return ans ;
+    }
+};
