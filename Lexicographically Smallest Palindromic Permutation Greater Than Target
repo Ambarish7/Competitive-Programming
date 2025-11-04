@@ -1,0 +1,54 @@
+class Solution {
+    private :
+    void solve(int ind,vector<int>&cnt, char mid, string target, int n, string s, string &ans, bool &flag){
+        if(flag==true)return ;
+        if(ans.size()==n/2){
+            string s1 = ans;
+            string s2 = ans;
+            reverse(s2.begin(),s2.end());
+            if(n%2==1){
+                s1 = s1+mid+s2;
+            }
+            else s1= s1+s2;
+
+            if(s1>target){
+                flag = true;
+                ans=s1;
+                return ;
+            }
+        }
+        for(int c=0 ; c<26 ; c++){
+            char ch = c+'a';
+            if(cnt[c]==0)continue;
+            if(ans== target.substr(0,ind) && ch<target[ind])continue;
+            ans+= ch;
+            cnt[c]--;
+            solve(ind+1,cnt,mid,target,n , s , ans, flag);
+            if(flag==true)return ;
+            ans.pop_back();
+            cnt[c]++;
+        }
+    }
+public:
+    string lexPalindromicPermutation(string s, string target) {
+        int n = s.size();
+        vector<int> cnt(26,0);
+        for(int i = 0 ; i<n ; i++){
+            cnt[s[i]-'a']++;
+        }   
+        int odd =0;
+        char mid =' ';
+        for(int i = 0 ; i<26 ; i++){
+            if(cnt[i]%2==1){
+                odd++;
+                mid='a'+i;
+            }
+            cnt[i]= cnt[i]/2;
+        }
+        if(odd>1)return "";
+        string ans ="";
+        bool flag = false;
+        solve(0,cnt,mid,target,n,s,ans,flag);
+        return ans;
+    }
+};
