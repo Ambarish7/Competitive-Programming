@@ -1,0 +1,90 @@
+class Solution {
+    private :
+    void add(int val,long long &sum, set<pair<int,int>>& st1,set<pair<int,int>> &st2,map<int,int> &mp,int x){
+        if(mp.find(val)!=mp.end()){
+            if(st1.find({mp[val],val})!=st1.end()){
+                st1.erase(st1.find({mp[val],val}));
+                sum -= 1LL*mp[val]*val;
+            }
+            else {
+                st2.erase(st2.find({mp[val],val}));
+            }
+        }
+        mp[val]+=1;
+        st1.insert({mp[val],val});
+        sum+= 1LL*mp[val]*val;
+        balance(st1,st2,mp,sum,x);
+    }
+
+
+    void remove(int val,long long &sum, set<pair<int,int>> &st1,set<pair<int,int>> &st2, map<int,int> &mp, int x){
+        if(mp.find(val)!=mp.end()){
+            if(st1.find({mp[val],val})!=st1.end()){
+                sum-= 1LL*mp[val]*val;
+                st1.erase(st1.find({mp[val],val}));
+            }
+            else {
+                st2.erase(st2.find({mp[val],val}));
+            }
+        }
+        mp[val]-=1;
+        if(mp[val]==0){
+            mp.erase(val);
+        }
+        else {
+             st1.insert({mp[val],val});
+             sum+= 1LL*mp[val]*val;
+        }
+        balance( st1,st2,mp,sum,x);
+
+    }
+
+
+    void balance(set<pair<int,int>> &st1, set<pair<int,int>> &st2, map<int,int> &mp , long long &sum,int x){
+        while(st1.size()<x && !st2.empty()){
+            auto it = prev(st2.end());
+            st1.insert(*it);
+            sum += 1LL*it->second*it->first;
+            st2.erase(it);
+        }
+        while(st1.size()>x){
+            auto it = st1.begin();
+            sum-= 1LL*it->second*it->first;
+            st2.insert(*it);
+            st1.erase(it);
+            
+        }
+        while(!st1.empty() && !st2.empty() && *prev(st2.end())>*st1.begin()){
+            auto it1 = prev(st2.end());
+            auto it2 = st1.begin();
+            sum += (1LL*it1->second*it1->first - 1LL*it2->second*it2->first);
+            st1.insert(*it1);
+            st2.insert(*it2);
+            st1.erase(it2); 
+            st2.erase(it1);
+            
+        } 
+    }
+public:
+    vector<long long> findXSum(vector<int>& nums, int k, int x) {
+        int n = nums.size();
+        map<int,int> mp;
+        
+        set<pair<int,int>> st1,st2;
+        vector<long long> vec;
+        long long sum1=0;
+        for(int i = 0 ; i<k ; i++){
+           
+            add(nums[i],sum1,st1,st2,mp,x);
+            
+        }
+        vec.push_back(sum1);
+        for(int i = k ; i<n ; i++){
+            
+            remove(nums[i-k],sum1,st1,st2,mp,x);
+            add(nums[i],sum1,st1,st2,mp,x);
+            vec.push_back(sum1);
+        }
+        return vec;
+    }
+};
