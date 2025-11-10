@@ -1,0 +1,91 @@
+class DisJointSet{
+    public:
+    vector<int> parent,size;
+    map<int,priority_queue<int,vector<int>,greater<int>>>mp;
+    public :
+    DisJointSet(int c){
+        size.resize(c+1);
+        parent.resize(c+1);
+        for(int i = 0 ; i<=c ; i++){
+            size[i]=1;
+            parent[i]=i;
+            mp[i].push(i);
+        }
+    }
+    int findPar(int node){
+        if(node==parent[node])return node;
+        return parent[node]= findPar(parent[node]);
+    }
+    void unionBySize(int u , int v){
+        int ul_u = findPar(u);
+        int ul_v = findPar(v);
+        if(ul_u==ul_v)return ;
+
+        if(size[ul_u]<size[ul_v]){
+            size[ul_v]+=size[ul_u];
+            parent[ul_u]= ul_v;
+            mp[ul_v].push(ul_u);
+            while(!mp[ul_u].empty()){
+                int top = mp[ul_u].top();
+                mp[ul_v].push(top);
+                mp[ul_u].pop();
+            }
+            mp.erase(ul_u);
+        }
+        else{
+            size[ul_u] += size[ul_v];
+            parent[ul_v] = ul_u;
+            mp[ul_u].push(ul_v);
+            while(!mp[ul_v].empty()){
+                int top = mp[ul_v].top();
+                mp[ul_u].push(top);
+                mp[ul_v].pop();
+            }
+            mp.erase(ul_v);
+        }
+    }
+};
+class Solution {
+public:
+    vector<int> processQueries(int c, vector<vector<int>>& connections, vector<vector<int>>& queries) {
+        DisJointSet dsu(c);
+        vector<int> offline(c+1,1);
+        vector<int> ans;
+        for(auto it : connections){
+            dsu.unionBySize(it[0],it[1]);
+        }
+
+        for( auto it : queries){
+            int type = it[0];
+            int node = it[1];
+            
+            if(type==2){
+                offline[node]=0;
+                continue;
+            }
+            if(type==1 && offline[node]==0){
+                int par = dsu.findPar(node);
+                auto &pq = dsu.mp[par];
+                /*if(pq.size()==0){
+                    ans.push_back(-1);
+                    continue;
+                }*/
+                while(!pq.empty() && offline[pq.top()]==0){
+                    pq.pop();
+                }
+                if(pq.empty())ans.push_back(-1);
+                else ans.push_back(pq.top());
+                
+            }
+            else if(type==1 && offline[node]==1){
+                ans.push_back(node);
+            }
+            else{
+                ans.push_back(-1);
+            }
+        }
+        return ans;
+    }
+};
+
+
