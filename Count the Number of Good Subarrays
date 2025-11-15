@@ -1,0 +1,25 @@
+class Solution {
+public:
+    long long countGood(vector<int>& nums, int k) {
+        int n = nums.size();
+        map<long long , long long > mp;
+        int i =0;
+        int j = 0;
+        long long ans =0;
+        long long cnt =0;
+        while(j<n){
+            long long x =1LL* nums[j];
+            cnt += mp[x];
+            mp[x]++;
+            while(cnt>=k){
+                ans += (n-j);
+                mp[1LL*nums[i]]--;
+                cnt -= mp[1LL*nums[i]];
+                i++;
+            }
+            j++;
+            //i++;
+        }
+        return ans;
+    }
+};
