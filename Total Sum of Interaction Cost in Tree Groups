@@ -1,0 +1,54 @@
+class Solution {
+    private :
+    void dfs1(int node , int parent , vector<int> &group , vector<vector<int>> &adj , vector<vector<int>> &count , vector<vector<long long>> &ans){    
+        for(auto it : adj[node]){
+            if(it!=parent){
+                dfs1(it,node , group, adj, count, ans);
+                for(int i = 0 ; i<21 ; i++){
+                    count[node][i] += count[it][i];
+                    ans[node][i] += (ans[it][i]+count[it][i]);
+                }
+            }
+        }
+        count[node][group[node]]++;
+    }
+    void dfs2(int node , int parent , vector<vector<int>> &adj, vector<long long>&res, vector<long long> &part,vector<vector<long long>> &ans , vector<vector<int>> &count , vector<int>&group ){
+        res[node] = ans[node][group[node]]+ (count[0][group[node]]-count[node][group[node]])+part[group[node]];
+
+        for(int i = 0 ; i<21 ; i++){
+            part[i] += ans[node][i]+(count[0][i]-count[node][i]);
+        }
+
+        for(auto it : adj[node]){
+            if(it!=parent){
+                vector<long long>new_part = part;
+                for(int i = 0 ; i<21 ; i++){
+                    new_part[i] -= (ans[it][i]+count[it][i]);
+                }
+                dfs2(it,node,adj,res,new_part,ans,count,group);
+            }
+        }
+    }
+public:
+    long long interactionCosts(int n, vector<vector<int>>& edges, vector<int>& group) {
+        vector<vector<int>> adj(n+1);
+        for(auto it : edges){
+            int u = it[0];
+            int v = it[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        vector<vector<int>> count(n, vector<int>(21, 0));
+vector<vector<long long>> ans(n, vector<long long>(21, 0));
+        dfs1(0,-1,group,adj,count,ans); 
+        vector<long long> res(n);
+        vector<long long> part(21,0);
+        dfs2(0,-1,adj,res,part,ans,count,group);
+        long long answer =0;
+        for(auto it : res){
+            answer += it;
+        }
+        answer = answer/2;
+        return answer ;
+    }
+};
