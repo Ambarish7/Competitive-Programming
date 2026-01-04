@@ -1,0 +1,23 @@
+class Solution {
+public:
+    long long minimumCost(string s, string t, int flipCost, int swapCost, int crossCost) {
+        int n = s.size();
+        long long typeA = 0;
+        long long typeB = 0;
+        for(int i = 0 ; i<n ; i++){
+            if(s[i]<t[i]){
+                typeA++;
+            }
+            else if(s[i]>t[i]){
+                typeB++;
+            }
+        }
+        long long pairs = min(typeA, typeB);
+        long long remain = abs(typeA-typeB);
+        long long ans =0;
+        ans = pairs * min(1LL*2*flipCost, 1LL*swapCost);
+        long long mini = 
+        ans+= (remain%2)*1LL*flipCost;
+        return ans ;
+    }
+};
