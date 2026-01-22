@@ -1,0 +1,36 @@
+class Solution {
+    private :
+    void dfs(int node, int parent , vector<vector<pair<int,int>>> &adj , vector<int> & ans, vector<int> &diff){
+        for(auto it : adj[node]){
+            int adjNode = it.first;
+            int idx = it.second;
+            if(adjNode!=parent){
+                dfs(adjNode,node, adj,ans,diff);
+                if(diff[adjNode]==1){
+                    ans.push_back(idx);
+                    diff[adjNode]^=1;
+                    diff[node]^=1;
+                }
+            }
+        }
+    }
+public:
+    vector<int> minimumFlips(int n, vector<vector<int>>& edges, string start, string target) {
+        vector<int>diff(n,0);
+        for(int i = 0 ; i<n ; i++){
+            diff[i]= (start[i]-'0')^(target[i]-'0');
+        }
+        vector<vector<pair<int,int>>> adj(n);
+        for(int i = 0 ; i<n-1; i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            adj[u].push_back({v,i});
+            adj[v].push_back({u,i});
+        }
+        vector<int>ans;
+        dfs(0,-1,adj,ans,diff);
+        sort(ans.begin(),ans.end());
+        if(diff[0]==1)return {-1};
+        return ans;
+    }
+};
